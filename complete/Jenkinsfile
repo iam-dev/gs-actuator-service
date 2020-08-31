@@ -21,7 +21,18 @@ pipeline {
         }
         stage('Docker Run') {
             steps {
-             sh 'docker run --publish 8000:8080 --detach --name gs-actuator-service gs-actuator-service'
+             sh '''
+                if [ ! "$(docker ps -q -f name=gs-actuator-service)" ]; then
+                    if [ "$(docker ps -aq -f status=exited -f name=gs-actuator-service)" ]; then
+                        # cleanup
+                            docker rm gs-actuator-service
+                    fi
+                    # run your container
+                        docker run --publish 8000:8080 --detach --name gs-actuator-service gs-actuator-service \\
+                        -e HTTP_PROXY=http://127.0.0.1:9991 \\
+                        -e HTTPS_PROXY=https://127.0.0.1:9991
+                fi
+                '''
             }
         }
     }
