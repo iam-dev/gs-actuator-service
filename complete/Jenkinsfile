@@ -12,11 +12,22 @@ pipeline {
                 }
             }
         }
-        stage('ZAP') {
+        stage('Start Docker ZAP') {
             steps {
-                script {
-                    startZap(host: "127.0.0.1", port: 9991 , timeout: 500, zapHome: "/opt/zaproxy")
-                }
+                sh '''
+                       if [ ! "$(docker ps -q -f name=zap)" ]; then
+                        if [ "$(docker ps -aq -f status=exited -f name=zap)" ]; then
+                            # cleanup
+                                docker rm zap
+                        fi
+                        # run your container
+                        docker run --detach --name zap -u zap -v "$(pwd)/reports":/zap/reports/:rw \\
+                            -i owasp/zap2docker-stable zap.sh -daemon -host 0.0.0.0 -port 9999 \\
+                            -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true \\
+                            -config api.disablekey=true
+                       fi
+
+                '''
             }
         }
         stage('Docker Run') {
@@ -33,11 +44,16 @@ pipeline {
                 '''
             }
         }
-        stage('Run ZAP Attack') {
+        stage('Run ZAP CLI'){
             steps {
-                script {
-                    runZapCrawler(host: "http://localhost:8080/hello-world")
-                }
+                sh 'docker exec zap zap-cli -p 9999 --verbose active-scan http://localhost:8080/hello-world'
+            }
+
+        }
+
+        stage('Generate Report') {
+            steps {
+                sh ' docker exec zap zap-cli -p 9999 --verbose report -o zap-report.html -f html'
             }
         }
     }
