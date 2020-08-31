@@ -28,11 +28,16 @@ pipeline {
                             docker rm gs-actuator-service
                     fi
                     # run your container
-                        docker run --publish 8000:8080 --detach --name gs-actuator-service gs-actuator-service \\
-                        -e HTTP_PROXY=http://127.0.0.1:9991 \\
-                        -e HTTPS_PROXY=https://127.0.0.1:9991
+                        docker run --publish 8080:8080 --detach --name gs-actuator-service gs-actuator-service
                 fi
                 '''
+            }
+        }
+        stage('Run ZAP Attack') {
+            steps {
+                script {
+                    runZapCrawler(host: "http://localhost:8080")
+                }
             }
         }
     }
