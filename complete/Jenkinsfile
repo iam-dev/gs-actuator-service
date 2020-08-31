@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git 'https://github.com/spring-guides/gs-actuator-service.git'
+                git 'https://github.com/iam-dev/gs-actuator-service.git'
                 dir('complete'){
                     sh 'pwd'
                     sh 'docker build .'
