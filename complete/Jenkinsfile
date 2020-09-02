@@ -25,7 +25,7 @@ pipeline {
                         fi
                         # run your container
                         docker run --detach --name zap -u zap -v "$(pwd)/reports":/zap/reports/:rw \\
-                            -i owasp/zap2docker-stable zap.sh -daemon -host 0.0.0.0 -port 9999 \\
+                            -i owasp/zap2docker-stable zap.sh -daemon -host zap -port 9999 \\
                             -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true \\
                             -config api.disablekey=true
                             --bind 0.0.0.0
@@ -43,7 +43,7 @@ pipeline {
                             docker rm gs-actuator-service
                     fi
                     # run your container
-                        docker run --publish 8080:8080 --detach --name gs-actuator-service gs-actuator-service -host 0.0.0.0 
+                        docker run --publish 8080:8080 --detach --name gs-actuator-service gs-actuator-service -host zap
                 fi
                 '''
             }
