@@ -43,7 +43,7 @@ pipeline {
                             docker rm gs-actuator-service
                     fi
                     # run your container
-                        docker run --publish 8080:8080 --detach --name gs-actuator-service gs-actuator-service
+                        docker run --publish 8080:8080 --detach --name gs-actuator-service gs-actuator-service -host 0.0.0.0 
                 fi
                 '''
             }
