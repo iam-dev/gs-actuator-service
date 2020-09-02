@@ -58,7 +58,7 @@ pipeline {
         }
         stage('Run ZAP CLI'){
             steps {
-                sh 'docker exec zap zap-cli -p 9999 --verbose active-scan http://testphp.vulnweb.com'
+                sh 'docker exec zap zap-cli -p 9999 --verbose active-scan http://172.17.0.3:8080/hello-world'
             }
 
         }
