@@ -16,6 +16,9 @@ pipeline {
             steps {
                 sh '''
                        if [ ! "$(docker ps -q -f name=zap)" ]; then
+                        if [ "$(docker ps -aq -f -f name=zap)" ]; then
+                            docker stop zap
+                        fi
                         if [ "$(docker ps -aq -f status=exited -f name=zap)" ]; then
                             # cleanup
                                 docker rm zap
