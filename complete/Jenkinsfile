@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh '''
                        if [ ! "$(docker ps -q -f name=zap)" ]; then
-                        if [ "$(docker ps -aq -f -f name=zap)" ]; then
+                        if [ "$(docker ps -aq -f name=zap)" ]; then
                             docker stop zap
                         fi
                         if [ "$(docker ps -aq -f status=exited -f name=zap)" ]; then
@@ -38,6 +38,9 @@ pipeline {
             steps {
              sh '''
                 if [ ! "$(docker ps -q -f name=gs-actuator-service)" ]; then
+                    if [ "$(docker ps -aq -f name=gs-actuator-service)" ]; then
+                        docker stop gs-actuator-service
+                    fi
                     if [ "$(docker ps -aq -f status=exited -f name=gs-actuator-service)" ]; then
                         # cleanup
                             docker rm gs-actuator-service
