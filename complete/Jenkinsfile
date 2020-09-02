@@ -48,14 +48,14 @@ pipeline {
                             docker rm gs-actuator-service
                     fi
                     # run your container
-                        docker run --publish 8080:8080 -host 0.0.0.0 --detach --name gs-actuator-service gs-actuator-service --link zap --add-host=gs-actuator-service:0.0.0.0 --network zap
+                        docker run --publish 8080:8080 -host 0.0.0.0 --detach --name gs-actuator-service gs-actuator-service --link zap --add-host=gs-actuator-service:172.17.0.3 --network zap
                 fi
                 '''
             }
         }
         stage('Run ZAP CLI'){
             steps {
-                sh 'docker exec zap zap-cli -p 9999 --verbose active-scan http://127.0.0.1:8080/hello-world'
+                sh 'docker exec zap zap-cli -p 9999 --verbose active-scan http://172.17.0.3:8080/hello-world'
             }
 
         }
