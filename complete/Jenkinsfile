@@ -30,6 +30,7 @@ pipeline {
                             -config api.disablekey=true
                             --link gs-actuator-service
                             -publish 9999:9999
+                            --network zap
                        fi
 
                 '''
@@ -47,7 +48,7 @@ pipeline {
                             docker rm gs-actuator-service
                     fi
                     # run your container
-                        docker run --publish 8080:8080 -host 0.0.0.0 -port 8080 --detach --name gs-actuator-service gs-actuator-service --link zap --add-host=gs-actuator-service:127.0.0.1
+                        docker run --publish 8080:8080 -host 0.0.0.0 --detach --name gs-actuator-service gs-actuator-service --link zap --add-host=gs-actuator-service:0.0.0.0 --network zap
                 fi
                 '''
             }
